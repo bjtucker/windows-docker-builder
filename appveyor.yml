@@ -5,8 +5,8 @@ environment:
 
 install:
   - ps: Install-Product go 1.5.1 x64
-  - ps: Install-Product msys2
   - set GOPATH
+  - choco install -y mingw
   - choco install -y virtualbox
   - choco install -y docker-machine
   # http://sourceforge.net/projects/tdm-gcc/files/TDM-GCC%20Installer/tdm-gcc-5.1.0-3.exe/download
