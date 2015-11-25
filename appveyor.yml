@@ -1,5 +1,7 @@
 version: 1.10.0.{build}
 environment:
+  TIMEOUT: "60m"
+  DOCKER_REMOTE_DAEMON: "1"
 
 install:
   - ps: Install-Product go 1.5.1 x64
@@ -19,10 +21,8 @@ build_script:
       docker run -it --privileged -e GOMAXPROCS=1 --pid host -d --name "docker-$commithash" --net host "docker:$commithash" bash -c 'hack/make.sh binary && cp bundles/$(cat VERSION)/binary/docker /bin/docker && exec docker daemon -D -H tcp://0.0.0.0:2375'
       Write-Host "Waiting for daemon in container to start"
       Sleep 30
-      $env:TIMEOUT="60m"
       $env:DOCKER_TEST_HOST="$env:DOCKER_HOST"
       #unset DOCKER_CLIENTONLY
-      #export DOCKER_REMOTE_DAEMON=1
       # run tests
       #hack/make.sh binary test-integration-cli
 
