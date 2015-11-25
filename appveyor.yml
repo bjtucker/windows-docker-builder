@@ -4,7 +4,6 @@ environment:
   DOCKER_REMOTE_DAEMON: "1"
 
 install:
-  - ps: Install-Product go 1.5.1 x64
   - set GOPATH
   - choco install -y mingw
   - choco install -y virtualbox
