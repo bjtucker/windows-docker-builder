@@ -1,0 +1,31 @@
+version: 1.10.0.{build}
+environment:
+
+install:
+  - ps: Install-Product go 1.5.1 x64
+  - ps: Install-Product msys2
+  - set GOPATH
+  - choco install -y virtualbox
+  - choco install -y docker-machine
+  # http://sourceforge.net/projects/tdm-gcc/files/TDM-GCC%20Installer/tdm-gcc-5.1.0-3.exe/download
+
+build_script:
+  # build the daemon image
+  - ps: >-
+      docker-machine create -d virtualbox dev
+      docker-machine env dev --shell powershell | Invoke-Expression
+      commithash=$(git rev-parse --short HEAD)
+      docker build --rm --force-rm -t "docker:$commithash" .
+      docker run -it --privileged -e GOMAXPROCS=1 --pid host -d --name "docker-$commithash" --net host "docker:$commithash" bash -c 'hack/make.sh binary && cp bundles/$(cat VERSION)/binary/docker /bin/docker && exec docker daemon -D -H tcp://0.0.0.0:2375'
+      Write-Host "Waiting for daemon in container to start"
+      Sleep 30
+      $env:TIMEOUT="60m"
+      $env:DOCKER_TEST_HOST="$env:DOCKER_HOST"
+      #unset DOCKER_CLIENTONLY
+      #export DOCKER_REMOTE_DAEMON=1
+      # run tests
+      #hack/make.sh binary test-integration-cli
+
+artifacts:
+  - path: '**\*.exe'
+    name: Binary
