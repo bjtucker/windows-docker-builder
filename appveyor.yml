@@ -12,17 +12,18 @@ install:
 build_script:
   # build the daemon image
   - ps: >-
-      docker-machine create -d virtualbox dev
-      docker-machine env dev --shell powershell | Invoke-Expression
-      commithash=$(git rev-parse --short HEAD)
-      docker build --rm --force-rm -t "docker:$commithash" .
-      docker run -it --privileged -e GOMAXPROCS=1 --pid host -d --name "docker-$commithash" --net host "docker:$commithash" bash -c 'hack/make.sh binary && cp bundles/$(cat VERSION)/binary/docker /bin/docker && exec docker daemon -D -H tcp://0.0.0.0:2375'
-      Write-Host "Waiting for daemon in container to start"
-      Sleep 30
-      $env:DOCKER_TEST_HOST="$env:DOCKER_HOST"
-      #unset DOCKER_CLIENTONLY
-      # run tests
-      #hack/make.sh binary test-integration-cli
+      docker-machine.exe create -d virtualbox dev
+      docker-machine.exe env dev --shell powershell | Invoke-Expression
+
+# commithash=$(git rev-parse --short HEAD)
+# docker.exe build --rm --force-rm -t "docker:$commithash" .
+# docker.exe run -it --privileged -e GOMAXPROCS=1 --pid host -d --name "docker-$commithash" --net host "docker:$commithash" bash -c 'hack/make.sh binary && cp bundles/1.10.0-dev/binary/docker /bin/docker && exec docker daemon -D -H tcp://0.0.0.0:2375'
+# Write-Host "Waiting for daemon in container to start"
+# Sleep 30
+# $env:DOCKER_TEST_HOST="$env:DOCKER_HOST"
+# #unset DOCKER_CLIENTONLY
+# # run tests
+# #hack/make.sh binary test-integration-cli
 
 artifacts:
   - path: '**\*.exe'
