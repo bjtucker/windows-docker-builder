@@ -11,9 +11,8 @@ install:
 
 build_script:
   # build the daemon image
-  - ps: >-
-      docker-machine.exe create -d virtualbox dev
-      docker-machine.exe env dev --shell powershell | Invoke-Expression
+  - docker-machine.exe create -d virtualbox dev
+  - ps: docker-machine.exe env dev --shell powershell | Invoke-Expression
 
 # commithash=$(git rev-parse --short HEAD)
 # docker.exe build --rm --force-rm -t "docker:$commithash" .
