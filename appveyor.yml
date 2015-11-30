@@ -4,6 +4,7 @@ environment:
   DOCKER_REMOTE_DAEMON: "1"
 
 install:
+  - ps: cpuid.ps1
   - choco install -y mingw
   - choco install -y virtualbox
   - choco install -y docker-machine
